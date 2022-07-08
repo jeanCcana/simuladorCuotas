@@ -38,23 +38,37 @@ import { excelFormulas } from "./excelFormulas.js";
 
   let deuda = monto;
 
+  let acumuladorCuotas = 0;
+
   for (let i = 0; i < numCuotas; i++) {
     let amort;
     let interes;
+    let cuota;
 
     amort = -excelFormulas.PPMT(tem, i + 1, numCuotas, monto, 0, 0);
 
     interes = deuda * tem;
 
+    cuota = amort + interes;
+
     textoRpta += `Cuota ${i + 1}:
       Deuda: ${moneRepr} ${deuda.toFixed(2)}
       Amortización: ${moneRepr} ${amort.toFixed(2)}
       Interés: ${moneRepr} ${interes.toFixed(2)}
-      Cuota total a pagar: ${moneRepr} ${(amort + interes).toFixed(2)}\n`;
+      Cuota total a pagar: ${moneRepr} ${cuota.toFixed(2)}\n`;
 
     //Actualiza la deuda para la proxima cuota
     deuda = deuda - amort;
+
+    // Acumula la cuota para la suma de todas las cuotas
+    acumuladorCuotas += cuota;
+    console.log(acumuladorCuotas);
   }
+
+  textoRpta += `\nDatos:
+  Monto inicial: ${moneRepr} ${monto}
+  Total a pagar: ${moneRepr} ${acumuladorCuotas.toFixed(2)}
+  Diferencia: ${moneRepr} ${(acumuladorCuotas - monto).toFixed(2)}`;
 
   alert(textoRpta);
 })();
